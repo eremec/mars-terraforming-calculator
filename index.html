@@ -52,9 +52,11 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   background:var(--panel);color:var(--muted);font-size:18px}
 
 /* ---- resource card ---- */
-.res{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);
-  border-radius:13px;padding:8px 10px;margin-bottom:8px}
-.rhead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.res{background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;overflow:hidden;margin-bottom:8px}
+.rhead{display:flex;align-items:center;gap:8px;padding:6px 10px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--c) 36%,var(--panel)),color-mix(in srgb,var(--c) 12%,var(--panel)))}
+.cbody{padding:8px 10px}
 .ic{flex:1 1 auto;font-size:22px;line-height:1}
 .conv{flex:0 0 auto;width:38px;height:32px;border-radius:8px;border:1px dashed var(--line);
   background:transparent;font-size:17px;color:var(--text)}
@@ -212,7 +214,7 @@ RES.forEach(r => {
         </div>
       </div>
     </div>
-    <div class="grp stock">${stockBtns}</div>`;
+    <div class="cbody"><div class="grp stock">${stockBtns}</div></div>`;
   rowsEl.appendChild(card);
 
   const prodGrp = card.querySelector(".grp.prod");

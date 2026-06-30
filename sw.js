@@ -1,6 +1,6 @@
 // Service worker for the Terraforming Mars tracker (offline-capable PWA).
 // Bump CACHE when the app shell changes to force clients to refresh.
-const CACHE = 'tm-tracker-v1';
+const CACHE = 'tm-tracker-v2';
 const ASSETS = [
   './',
   './index.html',
