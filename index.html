@@ -4,7 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ТМ счётчик">
+<meta name="application-name" content="ТМ счётчик">
 <meta name="theme-color" content="#1a1210">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <title>Терраформирование Марса — счётчик</title>
 <style>
 :root{
@@ -335,6 +343,28 @@ function update(){
   document.getElementById("prevText").textContent = "+" + mcGain() + " M€";
 }
 update();
+
+// ---- PWA: service worker + silent auto-update (no hard reload needed) ----
+if("serviceWorker" in navigator){
+  let refreshing = false;
+  // Was this page already controlled when it loaded? If so, a controller change
+  // means a NEW version activated → reload once. (Skips the harmless first-install claim.)
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if(refreshing || !hadController) return;
+    refreshing = true;
+    location.reload();
+  });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").then(reg => {
+      reg.update();   // check for a new version on every launch
+      // installed PWAs rarely navigate — re-check whenever the app regains focus
+      document.addEventListener("visibilitychange", () => {
+        if(document.visibilityState === "visible") reg.update();
+      });
+    }).catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
