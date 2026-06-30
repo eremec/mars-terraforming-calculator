@@ -9,73 +9,81 @@
 <style>
 :root{
   --bg:#1a1210; --panel:#241814; --panel2:#2c1e18; --line:#3a2820;
-  --text:#f3e9e2; --muted:#b79b8c; --accent:#e2683b; --good:#5bbf6a; --bad:#e05a4a;
+  --text:#f3e9e2; --muted:#b79b8c; --accent:#e2683b; --bad:#e05a4a;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   background:radial-gradient(circle at 50% -15%,#43200f,#1a1210 60%);
-  color:var(--text);-webkit-tap-highlight-color:transparent;
-  min-height:100vh;
+  color:var(--text);-webkit-tap-highlight-color:transparent;min-height:100vh;
 }
-.wrap{max-width:520px;margin:0 auto;padding:14px 12px calc(120px + env(safe-area-inset-bottom))}
-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.title{font-size:12px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
-.pname{font-size:20px;font-weight:700;background:transparent;border:none;color:var(--text);width:100%;padding:2px 0;outline:none}
-.pname:focus{border-bottom:1px solid var(--line)}
-.right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.gen{font-size:13px;color:var(--muted);white-space:nowrap}
-.menu-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 10px;font-size:13px}
+.wrap{max-width:520px;margin:0 auto;padding:10px 10px calc(84px + env(safe-area-inset-bottom))}
 
-/* TR */
-.tr{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:linear-gradient(135deg,#8a3318,#bd4d2b);border-radius:16px;padding:12px 14px;margin-bottom:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,.45)}
-.tr .lab{font-size:12px;opacity:.92;text-transform:uppercase;letter-spacing:.6px}
-.tr .lab b{display:block;font-size:15px;letter-spacing:0;text-transform:none}
-.tr .ctrl{display:flex;align-items:center;gap:8px}
-
-.card{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c);
-  border-radius:14px;padding:10px 12px;margin-bottom:10px}
-.chead{display:flex;align-items:center;gap:9px;margin-bottom:8px}
-.chead .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:17px;
-  background:color-mix(in srgb,var(--c) 26%,transparent)}
-.chead .nm{font-weight:600;font-size:15px}
-.chead .nm small{color:var(--muted);font-weight:400;font-size:12px;margin-left:4px}
-
-.row{display:flex;align-items:center;gap:8px;margin-top:6px}
-.row .lbl{width:74px;font-size:13px;color:var(--muted)}
-.stepbtn{flex:0 0 auto;width:44px;height:44px;border-radius:11px;border:1px solid var(--line);
-  background:var(--panel2);color:var(--text);font-size:24px;line-height:1;font-weight:500;
-  display:grid;place-items:center;user-select:none;touch-action:manipulation}
-.stepbtn:active{background:var(--accent);border-color:var(--accent)}
-.val{flex:1 1 auto;width:100%;height:44px;border-radius:11px;border:1px solid var(--line);
-  background:#160f0c;color:var(--text);text-align:center;font-size:20px;font-weight:700;
-  -moz-appearance:textfield;outline:none}
-.val::-webkit-inner-spin-button,.val::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.val{outline:none;border:1px solid var(--line);background:#160f0c;color:var(--text);
+  text-align:center;font-weight:700;border-radius:9px}
 .val:focus{border-color:var(--accent)}
-.row.stock .val{color:var(--c)}
+.sb{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:9px;
+  line-height:1;font-weight:600;user-select:none;touch-action:manipulation;display:grid;place-items:center}
+.sb:active{filter:brightness(1.3)}
 
-.convert{margin-top:8px;width:100%;height:40px;border-radius:11px;border:1px dashed var(--line);
-  background:transparent;color:var(--muted);font-size:13px}
-.convert:not(:disabled):active{background:color-mix(in srgb,var(--c) 24%,transparent);color:var(--text)}
-.convert:disabled{opacity:.4}
+/* ---- top bar ---- */
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.spacer{flex:1 1 auto}
+.trbox{display:flex;align-items:center;gap:3px;background:linear-gradient(135deg,#8a3318,#bd4d2b);
+  border-radius:11px;padding:3px 5px;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.trbox .lab{font-size:12px;font-weight:800;opacity:.95;padding:0 3px}
+.trbox .sb{height:34px;min-width:30px;background:rgba(0,0,0,.18);border:none;color:#fff;font-size:21px}
+.trbox .val{height:34px;width:40px;background:rgba(0,0,0,.22);border:none;color:#fff;font-size:18px}
+.gen{font-size:13px;color:var(--muted);white-space:nowrap}
+.gen b{color:var(--text);font-weight:700;font-size:15px}
+.menu-btn{flex:0 0 auto;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:18px}
 
-/* bottom bar */
-.bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(26,18,16,0),#1a1210 28%);
-  padding:14px 12px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;max-width:520px;margin:0 auto}
-.produce{flex:1;height:56px;border:none;border-radius:14px;font-size:17px;font-weight:700;color:#fff;
-  background:linear-gradient(135deg,#1f7a3d,#2ea353);box-shadow:0 6px 18px rgba(0,0,0,.5)}
-.produce small{display:block;font-size:12px;font-weight:500;opacity:.85}
-.produce:active{filter:brightness(1.1)}
-.undo{flex:0 0 auto;width:56px;height:56px;border-radius:14px;border:1px solid var(--line);
+/* ---- resource card ---- */
+.res{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);
+  border-radius:13px;padding:8px 10px;margin-bottom:8px}
+.rhead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ic{flex:1 1 auto;font-size:22px;line-height:1}
+.conv{flex:0 0 auto;width:38px;height:32px;border-radius:8px;border:1px dashed var(--line);
+  background:transparent;font-size:17px;color:var(--text)}
+.conv:not(:disabled):active{background:color-mix(in srgb,var(--c) 26%,transparent)}
+.conv:disabled{opacity:.28}
+.conv.empty{display:none}
+
+.prodbox{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.plabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.grp.prod{display:flex;align-items:center;gap:4px}
+.grp.prod .sb{width:32px;height:32px;font-size:18px}
+.grp.prod .val{width:42px;height:32px;font-size:16px}
+
+/* stock stepper row: −10 −5 −1 [value] +1 +5 +10 */
+.grp.stock{display:flex;align-items:stretch;gap:4px}
+.grp.stock .sb{flex:1 1 0;min-width:0;height:46px;font-size:14px}
+.grp.stock .sb.one{flex:1.15 1 0;font-size:20px;font-weight:800;
+  background:color-mix(in srgb,var(--c) 18%,var(--panel2));
+  border-color:color-mix(in srgb,var(--c) 42%,var(--line))}
+.grp.stock .val.big{flex:1.8 1 0;min-width:0;height:46px;font-size:23px;font-weight:800;color:var(--c)}
+
+/* ---- bottom bar ---- */
+.bar{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;
+  background:linear-gradient(180deg,rgba(26,18,16,0),#1a1210 26%);
+  padding:10px 10px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px}
+.produce{flex:1;height:52px;border:none;border-radius:13px;color:#fff;font-weight:700;
+  background:linear-gradient(135deg,#1f7a3d,#2ea353);box-shadow:0 6px 16px rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}
+.produce .pprev{font-size:13px;font-weight:600;background:rgba(0,0,0,.22);padding:3px 9px;border-radius:8px}
+.produce:active{filter:brightness(1.12)}
+.undo{flex:0 0 auto;width:52px;height:52px;border-radius:13px;border:1px solid var(--line);
   background:var(--panel);color:var(--text);font-size:22px}
 .undo[hidden]{display:none}
 
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
-  background:#102a16;border:1px solid #2ea353;color:#dff5e3;padding:10px 14px;border-radius:12px;
-  font-size:14px;max-width:90vw;text-align:center;opacity:0;transition:.25s;pointer-events:none;z-index:5}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);
+  background:#102a16;border:1px solid #2ea353;color:#dff5e3;padding:9px 14px;border-radius:11px;
+  font-size:13px;max-width:92vw;text-align:center;opacity:0;transition:.22s;pointer-events:none;z-index:5}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:10}
@@ -91,31 +99,25 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;ma
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div style="flex:1;min-width:0">
-      <div class="title">Терраформирование Марса</div>
-      <input class="pname" id="pname" placeholder="Игрок" maxlength="24">
+  <div class="topbar">
+    <div class="trbox">
+      <span class="lab">TR</span>
+      <button class="sb" data-tr="-1">−</button>
+      <input class="val" id="trVal" type="number" inputmode="numeric">
+      <button class="sb" data-tr="1">+</button>
     </div>
-    <div class="right">
-      <button class="menu-btn" id="menuBtn">⚙ Меню</button>
-      <div class="gen">Поколение <b id="gen">1</b></div>
-    </div>
-  </header>
-
-  <div class="tr">
-    <div class="lab">Рейтинг<br><b>Terraform Rating</b></div>
-    <div class="ctrl">
-      <button class="stepbtn" data-tr="-1">−</button>
-      <input class="val" id="trVal" type="number" inputmode="numeric" style="width:84px;flex:0 0 auto">
-      <button class="stepbtn" data-tr="1">+</button>
-    </div>
+    <span class="spacer"></span>
+    <div class="gen">Поколение <b id="gen">1</b></div>
+    <button class="menu-btn" id="menuBtn">⚙</button>
   </div>
 
-  <div id="cards"></div>
+  <div id="rows"></div>
 </div>
 
 <div class="bar">
-  <button class="produce" id="produceBtn">Производство<small id="prevText"></small></button>
+  <button class="produce" id="produceBtn">
+    <span>⚙ Производство</span><span class="pprev" id="prevText"></span>
+  </button>
   <button class="undo" id="undoBtn" hidden title="Отменить производство">↩</button>
 </div>
 
@@ -133,19 +135,22 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;ma
 <script>
 "use strict";
 const RES = [
-  {key:"mc",       name:"Кредиты",  sub:"M€",     icon:"💰", color:"#f1c40f", minProd:-5},
-  {key:"steel",    name:"Сталь",    sub:"×2 M€",  icon:"🔩", color:"#c87f3a", minProd:0},
-  {key:"titanium", name:"Титан",    sub:"×3 M€",  icon:"🛰️", color:"#9aa4ad", minProd:0},
-  {key:"plants",   name:"Растения", sub:"8 → 🌳", icon:"🌱", color:"#4caf50", minProd:0, convert:{cost:8, label:"8 🌱 → озеленение (+1 TR)"}},
-  {key:"energy",   name:"Энергия",  sub:"→ 🔥",   icon:"⚡", color:"#9b59b6", minProd:0},
-  {key:"heat",     name:"Тепло",    sub:"8 → 🌡",  icon:"🔥", color:"#e74c3c", minProd:0, convert:{cost:8, label:"8 🔥 → нагрев (+1 TR)"}},
+  {key:"mc",       name:"Кредиты",  icon:"💰", color:"#f1c40f", minProd:-5},
+  {key:"steel",    name:"Сталь",    icon:"🔨", color:"#c87f3a", minProd:0},
+  {key:"titanium", name:"Титан",    icon:"⭐", color:"#9aa4ad", minProd:0},
+  {key:"plants",   name:"Растения", icon:"🌱", color:"#4caf50", minProd:0, convert:{cost:8, icon:"🌳", title:"8 растений → озеленение (+1 TR)"}},
+  {key:"energy",   name:"Энергия",  icon:"⚡", color:"#9b59b6", minProd:0},
+  {key:"heat",     name:"Тепло",    icon:"🔥", color:"#e74c3c", minProd:0, convert:{cost:8, icon:"🌡️", title:"8 тепла → нагрев (+1 TR)"}},
 ];
 const KEY = "tm-tracker-v1";
+const STOCK_STEPS = [-10, -5, -1, "val", 1, 5, 10];
+const ICONS = {};
+RES.forEach(r => ICONS[r.key] = r.icon);
 
 function defaultState(){
   const res = {};
   RES.forEach(r => res[r.key] = {prod:0, stock:0});
-  return {name:"", tr:20, gen:1, res};
+  return {tr:20, gen:1, res};
 }
 let state = load();
 let lastSnapshot = null;
@@ -157,48 +162,61 @@ function load(){
   }catch(e){}
   return defaultState();
 }
-function save(){
-  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+function adjust(key, field, delta){
+  state.res[key][field] = clampVal(key, field, state.res[key][field] + delta);
+  update(); save();
+}
+function clampVal(key, field, v){
+  if(isNaN(v)) v = 0;
+  v = Math.round(v);
+  if(field === "prod") return Math.max(RES.find(x => x.key === key).minProd, v);
+  return Math.max(0, v);
 }
 
-// ---- build DOM ----
-const cardsEl = document.getElementById("cards");
-const refs = {}; // key -> {prod,stock,convert}
+// ---- build cards ----
+const rowsEl = document.getElementById("rows");
+const refs = {};
 RES.forEach(r => {
+  const stockBtns = STOCK_STEPS.map(s =>
+    s === "val"
+      ? `<input class="val big" type="number" inputmode="numeric">`
+      : `<button class="sb${Math.abs(s)===1?" one":""}" data-d="${s}">${s>0?"+":"−"}${Math.abs(s)}</button>`
+  ).join("");
+
   const card = document.createElement("div");
-  card.className = "card";
+  card.className = "res";
   card.style.setProperty("--c", r.color);
+  card.title = r.name;
   card.innerHTML = `
-    <div class="chead">
-      <div class="ic">${r.icon}</div>
-      <div class="nm">${r.name}<small>${r.sub}</small></div>
+    <div class="rhead">
+      <span class="ic">${r.icon}</span>
+      ${r.convert
+        ? `<button class="conv" title="${r.convert.title}">${r.convert.icon}</button>`
+        : `<button class="conv empty" disabled></button>`}
+      <div class="prodbox">
+        <span class="plabel">Произв.</span>
+        <div class="grp prod">
+          <button class="sb" data-d="-1">−</button>
+          <input class="val" type="number" inputmode="numeric">
+          <button class="sb" data-d="1">+</button>
+        </div>
+      </div>
     </div>
-    <div class="row prod">
-      <span class="lbl">Производство</span>
-      <button class="stepbtn" data-act="dec">−</button>
-      <input class="val" type="number" inputmode="numeric">
-      <button class="stepbtn" data-act="inc">+</button>
-    </div>
-    <div class="row stock">
-      <span class="lbl">Склад</span>
-      <button class="stepbtn" data-act="dec">−</button>
-      <input class="val" type="number" inputmode="numeric">
-      <button class="stepbtn" data-act="inc">+</button>
-    </div>
-    ${r.convert ? `<button class="convert">${r.convert.label}</button>` : ""}`;
-  cardsEl.appendChild(card);
+    <div class="grp stock">${stockBtns}</div>`;
+  rowsEl.appendChild(card);
 
-  const rows = card.querySelectorAll(".row");
-  const prodRow = rows[0], stockRow = rows[1];
-  const ref = {prod: prodRow.querySelector(".val"), stock: stockRow.querySelector(".val")};
-  refs[r.key] = ref;
+  const prodGrp = card.querySelector(".grp.prod");
+  const stockGrp = card.querySelector(".grp.stock");
+  refs[r.key] = {prod: prodGrp.querySelector(".val"), stock: stockGrp.querySelector(".val")};
 
-  bindField(r, "prod", prodRow, ref.prod);
-  bindField(r, "stock", stockRow, ref.stock);
+  bindStepper(prodGrp, r.key, "prod");
+  bindStepper(stockGrp, r.key, "stock");
 
   if(r.convert){
-    const cb = card.querySelector(".convert");
-    ref.convert = cb;
+    const cb = card.querySelector(".conv");
+    refs[r.key].conv = cb;
     cb.addEventListener("click", () => {
       if(state.res[r.key].stock >= r.convert.cost){
         state.res[r.key].stock -= r.convert.cost;
@@ -210,46 +228,30 @@ RES.forEach(r => {
   }
 });
 
-function clampVal(key, field, v){
-  if(isNaN(v)) v = 0;
-  v = Math.round(v);
-  if(field === "prod"){
-    const r = RES.find(x => x.key === key);
-    return Math.max(r.minProd, v);
-  }
-  return Math.max(0, v); // stock
-}
-
-function bindField(r, field, row, input){
-  input.addEventListener("change", () => {
-    state.res[r.key][field] = clampVal(r.key, field, parseInt(input.value, 10));
-    update(); save();
+function bindStepper(grp, key, field){
+  grp.querySelectorAll(".sb").forEach(btn => {
+    const delta = parseInt(btn.dataset.d, 10);
+    const fn = () => adjust(key, field, delta);
+    if(Math.abs(delta) === 1) holdRepeat(btn, fn);   // hold to ramp ±1
+    else btn.addEventListener("click", fn);          // ±5/±10 single tap
   });
-  row.querySelectorAll(".stepbtn").forEach(btn => {
-    const delta = btn.dataset.act === "inc" ? 1 : -1;
-    holdRepeat(btn, () => {
-      state.res[r.key][field] = clampVal(r.key, field, state.res[r.key][field] + delta);
-      update(); save();
-    });
+  grp.querySelector(".val").addEventListener("change", e => {
+    state.res[key][field] = clampVal(key, field, parseInt(e.target.value, 10));
+    update(); save();
   });
 }
 
 // TR controls
 const trVal = document.getElementById("trVal");
 trVal.addEventListener("change", () => {
-  state.tr = Math.max(0, Math.round(parseInt(trVal.value,10) || 0));
-  update(); save();
+  state.tr = Math.max(0, Math.round(parseInt(trVal.value,10) || 0)); update(); save();
 });
 document.querySelectorAll("[data-tr]").forEach(btn => {
   const d = parseInt(btn.dataset.tr, 10);
   holdRepeat(btn, () => { state.tr = Math.max(0, state.tr + d); update(); save(); });
 });
 
-// player name
-const pname = document.getElementById("pname");
-pname.addEventListener("input", () => { state.name = pname.value; save(); });
-
-// hold-to-repeat for + / − buttons
+// hold-to-repeat
 function holdRepeat(btn, fn){
   let to, iv;
   const stop = () => { clearTimeout(to); clearInterval(iv); to = iv = null; };
@@ -262,48 +264,36 @@ function holdRepeat(btn, fn){
 
 // ---- production phase ----
 function mcGain(){ return state.tr + state.res.mc.prod; }
-
 function runProduction(){
   lastSnapshot = JSON.parse(JSON.stringify(state));
   const s = state, gains = {};
-  // 1. energy -> heat
-  const conv = s.res.energy.stock;
-  s.res.heat.stock += conv;
-  s.res.energy.stock = 0;
-  // 2. credits
-  gains.mc = mcGain();
+  const conv = s.res.energy.stock;            // 1. energy -> heat
+  s.res.heat.stock += conv; s.res.energy.stock = 0;
+  gains.mc = mcGain();                          // 2. credits
   s.res.mc.stock = Math.max(0, s.res.mc.stock + gains.mc);
-  // 3. the rest
-  ["steel","titanium","plants","energy","heat"].forEach(k => {
-    gains[k] = s.res[k].prod;
-    s.res[k].stock += s.res[k].prod;
+  ["steel","titanium","plants","energy","heat"].forEach(k => { // 3. rest
+    gains[k] = s.res[k].prod; s.res[k].stock += s.res[k].prod;
   });
   s.gen += 1;
   update(); save();
 
+  const icons = ICONS;
   const parts = [`+${gains.mc} M€`];
   if(conv > 0) parts.push(`${conv}⚡→🔥`);
-  const icons = {steel:"🔩",titanium:"🛰️",plants:"🌱",energy:"⚡",heat:"🔥"};
-  ["steel","titanium","plants","energy","heat"].forEach(k => {
-    if(gains[k] > 0) parts.push(`+${gains[k]}${icons[k]}`);
-  });
+  ["steel","titanium","plants","energy","heat"].forEach(k => { if(gains[k] > 0) parts.push(`+${gains[k]}${icons[k]}`); });
   toast("Поколение " + s.gen + " · " + parts.join(" · "));
   document.getElementById("undoBtn").hidden = false;
 }
-
 function undoProduction(){
   if(!lastSnapshot) return;
-  state = lastSnapshot;
-  lastSnapshot = null;
+  state = lastSnapshot; lastSnapshot = null;
   document.getElementById("undoBtn").hidden = true;
-  update(); save();
-  toast("Производство отменено");
+  update(); save(); toast("Производство отменено");
 }
-
 document.getElementById("produceBtn").addEventListener("click", runProduction);
 document.getElementById("undoBtn").addEventListener("click", undoProduction);
 
-// ---- menu sheet ----
+// ---- menu ----
 const sheet = document.getElementById("sheet");
 document.getElementById("menuBtn").addEventListener("click", () => sheet.classList.add("show"));
 document.getElementById("closeSheet").addEventListener("click", () => sheet.classList.remove("show"));
@@ -316,12 +306,10 @@ document.getElementById("newGameBtn").addEventListener("click", () => {
   }
 });
 document.getElementById("prodSummaryBtn").addEventListener("click", () => {
-  const r = state.res, icons = {steel:"🔩",titanium:"🛰️",plants:"🌱",energy:"⚡",heat:"🔥"};
+  const r = state.res, icons = ICONS;
   const lines = [`💰 +${mcGain()} M€  (TR ${state.tr} + произв. ${r.mc.prod})`];
   if(r.energy.stock > 0) lines.push(`🔥 +${r.energy.stock} (вся энергия → тепло)`);
-  ["steel","titanium","plants","energy","heat"].forEach(k=>{
-    if(r[k].prod>0) lines.push(`${icons[k]} +${r[k].prod}`);
-  });
+  ["steel","titanium","plants","energy","heat"].forEach(k => { if(r[k].prod > 0) lines.push(`${icons[k]} +${r[k].prod}`); });
   alert("Следующее производство начислит:\n\n" + lines.join("\n"));
 });
 
@@ -337,13 +325,12 @@ function toast(msg){
 // ---- render ----
 function update(){
   trVal.value = state.tr;
-  pname.value = state.name || "";
   document.getElementById("gen").textContent = state.gen;
   RES.forEach(r => {
     const rs = state.res[r.key];
     refs[r.key].prod.value = rs.prod;
     refs[r.key].stock.value = rs.stock;
-    if(r.convert) refs[r.key].convert.disabled = rs.stock < r.convert.cost;
+    if(r.convert) refs[r.key].conv.disabled = rs.stock < r.convert.cost;
   });
   document.getElementById("prevText").textContent = "+" + mcGain() + " M€";
 }
