@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1210">
+<title>Терраформирование Марса — счётчик</title>
+<style>
+:root{
+  --bg:#1a1210; --panel:#241814; --panel2:#2c1e18; --line:#3a2820;
+  --text:#f3e9e2; --muted:#b79b8c; --accent:#e2683b; --good:#5bbf6a; --bad:#e05a4a;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:radial-gradient(circle at 50% -15%,#43200f,#1a1210 60%);
+  color:var(--text);-webkit-tap-highlight-color:transparent;
+  min-height:100vh;
+}
+.wrap{max-width:520px;margin:0 auto;padding:14px 12px calc(120px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.title{font-size:12px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
+.pname{font-size:20px;font-weight:700;background:transparent;border:none;color:var(--text);width:100%;padding:2px 0;outline:none}
+.pname:focus{border-bottom:1px solid var(--line)}
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.gen{font-size:13px;color:var(--muted);white-space:nowrap}
+.menu-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 10px;font-size:13px}
+
+/* TR */
+.tr{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:linear-gradient(135deg,#8a3318,#bd4d2b);border-radius:16px;padding:12px 14px;margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.tr .lab{font-size:12px;opacity:.92;text-transform:uppercase;letter-spacing:.6px}
+.tr .lab b{display:block;font-size:15px;letter-spacing:0;text-transform:none}
+.tr .ctrl{display:flex;align-items:center;gap:8px}
+
+.card{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c);
+  border-radius:14px;padding:10px 12px;margin-bottom:10px}
+.chead{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.chead .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:17px;
+  background:color-mix(in srgb,var(--c) 26%,transparent)}
+.chead .nm{font-weight:600;font-size:15px}
+.chead .nm small{color:var(--muted);font-weight:400;font-size:12px;margin-left:4px}
+
+.row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.row .lbl{width:74px;font-size:13px;color:var(--muted)}
+.stepbtn{flex:0 0 auto;width:44px;height:44px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--text);font-size:24px;line-height:1;font-weight:500;
+  display:grid;place-items:center;user-select:none;touch-action:manipulation}
+.stepbtn:active{background:var(--accent);border-color:var(--accent)}
+.val{flex:1 1 auto;width:100%;height:44px;border-radius:11px;border:1px solid var(--line);
+  background:#160f0c;color:var(--text);text-align:center;font-size:20px;font-weight:700;
+  -moz-appearance:textfield;outline:none}
+.val::-webkit-inner-spin-button,.val::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.val:focus{border-color:var(--accent)}
+.row.stock .val{color:var(--c)}
+
+.convert{margin-top:8px;width:100%;height:40px;border-radius:11px;border:1px dashed var(--line);
+  background:transparent;color:var(--muted);font-size:13px}
+.convert:not(:disabled):active{background:color-mix(in srgb,var(--c) 24%,transparent);color:var(--text)}
+.convert:disabled{opacity:.4}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(26,18,16,0),#1a1210 28%);
+  padding:14px 12px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;max-width:520px;margin:0 auto}
+.produce{flex:1;height:56px;border:none;border-radius:14px;font-size:17px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#1f7a3d,#2ea353);box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.produce small{display:block;font-size:12px;font-weight:500;opacity:.85}
+.produce:active{filter:brightness(1.1)}
+.undo{flex:0 0 auto;width:56px;height:56px;border-radius:14px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);font-size:22px}
+.undo[hidden]{display:none}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
+  background:#102a16;border:1px solid #2ea353;color:#dff5e3;padding:10px 14px;border-radius:12px;
+  font-size:14px;max-width:90vw;text-align:center;opacity:0;transition:.25s;pointer-events:none;z-index:5}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:10}
+.sheet.show{display:flex}
+.sheet .inner{background:var(--panel);width:100%;max-width:520px;margin:0 auto;border-radius:18px 18px 0 0;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.sheet h3{margin:2px 0 12px}
+.sheet button{width:100%;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);
+  color:var(--text);font-size:15px;margin-top:8px}
+.sheet button.danger{color:var(--bad);border-color:#5a2a24}
+.sheet button.close{background:transparent;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div style="flex:1;min-width:0">
+      <div class="title">Терраформирование Марса</div>
+      <input class="pname" id="pname" placeholder="Игрок" maxlength="24">
+    </div>
+    <div class="right">
+      <button class="menu-btn" id="menuBtn">⚙ Меню</button>
+      <div class="gen">Поколение <b id="gen">1</b></div>
+    </div>
+  </header>
+
+  <div class="tr">
+    <div class="lab">Рейтинг<br><b>Terraform Rating</b></div>
+    <div class="ctrl">
+      <button class="stepbtn" data-tr="-1">−</button>
+      <input class="val" id="trVal" type="number" inputmode="numeric" style="width:84px;flex:0 0 auto">
+      <button class="stepbtn" data-tr="1">+</button>
+    </div>
+  </div>
+
+  <div id="cards"></div>
+</div>
+
+<div class="bar">
+  <button class="produce" id="produceBtn">Производство<small id="prevText"></small></button>
+  <button class="undo" id="undoBtn" hidden title="Отменить производство">↩</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="sheet" id="sheet">
+  <div class="inner">
+    <h3>Меню</h3>
+    <button id="prodSummaryBtn">Что начислит производство?</button>
+    <button class="danger" id="newGameBtn">Новая игра (сброс)</button>
+    <button class="close" id="closeSheet">Закрыть</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+const RES = [
+  {key:"mc",       name:"Кредиты",  sub:"M€",     icon:"💰", color:"#f1c40f", minProd:-5},
+  {key:"steel",    name:"Сталь",    sub:"×2 M€",  icon:"🔩", color:"#c87f3a", minProd:0},
+  {key:"titanium", name:"Титан",    sub:"×3 M€",  icon:"🛰️", color:"#9aa4ad", minProd:0},
+  {key:"plants",   name:"Растения", sub:"8 → 🌳", icon:"🌱", color:"#4caf50", minProd:0, convert:{cost:8, label:"8 🌱 → озеленение (+1 TR)"}},
+  {key:"energy",   name:"Энергия",  sub:"→ 🔥",   icon:"⚡", color:"#9b59b6", minProd:0},
+  {key:"heat",     name:"Тепло",    sub:"8 → 🌡",  icon:"🔥", color:"#e74c3c", minProd:0, convert:{cost:8, label:"8 🔥 → нагрев (+1 TR)"}},
+];
+const KEY = "tm-tracker-v1";
+
+function defaultState(){
+  const res = {};
+  RES.forEach(r => res[r.key] = {prod:0, stock:0});
+  return {name:"", tr:20, gen:1, res};
+}
+let state = load();
+let lastSnapshot = null;
+
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if(s && s.res && typeof s.tr === "number") return s;
+  }catch(e){}
+  return defaultState();
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+}
+
+// ---- build DOM ----
+const cardsEl = document.getElementById("cards");
+const refs = {}; // key -> {prod,stock,convert}
+RES.forEach(r => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.setProperty("--c", r.color);
+  card.innerHTML = `
+    <div class="chead">
+      <div class="ic">${r.icon}</div>
+      <div class="nm">${r.name}<small>${r.sub}</small></div>
+    </div>
+    <div class="row prod">
+      <span class="lbl">Производство</span>
+      <button class="stepbtn" data-act="dec">−</button>
+      <input class="val" type="number" inputmode="numeric">
+      <button class="stepbtn" data-act="inc">+</button>
+    </div>
+    <div class="row stock">
+      <span class="lbl">Склад</span>
+      <button class="stepbtn" data-act="dec">−</button>
+      <input class="val" type="number" inputmode="numeric">
+      <button class="stepbtn" data-act="inc">+</button>
+    </div>
+    ${r.convert ? `<button class="convert">${r.convert.label}</button>` : ""}`;
+  cardsEl.appendChild(card);
+
+  const rows = card.querySelectorAll(".row");
+  const prodRow = rows[0], stockRow = rows[1];
+  const ref = {prod: prodRow.querySelector(".val"), stock: stockRow.querySelector(".val")};
+  refs[r.key] = ref;
+
+  bindField(r, "prod", prodRow, ref.prod);
+  bindField(r, "stock", stockRow, ref.stock);
+
+  if(r.convert){
+    const cb = card.querySelector(".convert");
+    ref.convert = cb;
+    cb.addEventListener("click", () => {
+      if(state.res[r.key].stock >= r.convert.cost){
+        state.res[r.key].stock -= r.convert.cost;
+        state.tr += 1;
+        update(); save();
+        toast(`${r.icon} ${r.convert.cost} → +1 TR`);
+      }
+    });
+  }
+});
+
+function clampVal(key, field, v){
+  if(isNaN(v)) v = 0;
+  v = Math.round(v);
+  if(field === "prod"){
+    const r = RES.find(x => x.key === key);
+    return Math.max(r.minProd, v);
+  }
+  return Math.max(0, v); // stock
+}
+
+function bindField(r, field, row, input){
+  input.addEventListener("change", () => {
+    state.res[r.key][field] = clampVal(r.key, field, parseInt(input.value, 10));
+    update(); save();
+  });
+  row.querySelectorAll(".stepbtn").forEach(btn => {
+    const delta = btn.dataset.act === "inc" ? 1 : -1;
+    holdRepeat(btn, () => {
+      state.res[r.key][field] = clampVal(r.key, field, state.res[r.key][field] + delta);
+      update(); save();
+    });
+  });
+}
+
+// TR controls
+const trVal = document.getElementById("trVal");
+trVal.addEventListener("change", () => {
+  state.tr = Math.max(0, Math.round(parseInt(trVal.value,10) || 0));
+  update(); save();
+});
+document.querySelectorAll("[data-tr]").forEach(btn => {
+  const d = parseInt(btn.dataset.tr, 10);
+  holdRepeat(btn, () => { state.tr = Math.max(0, state.tr + d); update(); save(); });
+});
+
+// player name
+const pname = document.getElementById("pname");
+pname.addEventListener("input", () => { state.name = pname.value; save(); });
+
+// hold-to-repeat for + / − buttons
+function holdRepeat(btn, fn){
+  let to, iv;
+  const stop = () => { clearTimeout(to); clearInterval(iv); to = iv = null; };
+  btn.addEventListener("pointerdown", e => {
+    e.preventDefault(); fn();
+    to = setTimeout(() => { iv = setInterval(fn, 75); }, 420);
+  });
+  ["pointerup","pointerleave","pointercancel"].forEach(ev => btn.addEventListener(ev, stop));
+}
+
+// ---- production phase ----
+function mcGain(){ return state.tr + state.res.mc.prod; }
+
+function runProduction(){
+  lastSnapshot = JSON.parse(JSON.stringify(state));
+  const s = state, gains = {};
+  // 1. energy -> heat
+  const conv = s.res.energy.stock;
+  s.res.heat.stock += conv;
+  s.res.energy.stock = 0;
+  // 2. credits
+  gains.mc = mcGain();
+  s.res.mc.stock = Math.max(0, s.res.mc.stock + gains.mc);
+  // 3. the rest
+  ["steel","titanium","plants","energy","heat"].forEach(k => {
+    gains[k] = s.res[k].prod;
+    s.res[k].stock += s.res[k].prod;
+  });
+  s.gen += 1;
+  update(); save();
+
+  const parts = [`+${gains.mc} M€`];
+  if(conv > 0) parts.push(`${conv}⚡→🔥`);
+  const icons = {steel:"🔩",titanium:"🛰️",plants:"🌱",energy:"⚡",heat:"🔥"};
+  ["steel","titanium","plants","energy","heat"].forEach(k => {
+    if(gains[k] > 0) parts.push(`+${gains[k]}${icons[k]}`);
+  });
+  toast("Поколение " + s.gen + " · " + parts.join(" · "));
+  document.getElementById("undoBtn").hidden = false;
+}
+
+function undoProduction(){
+  if(!lastSnapshot) return;
+  state = lastSnapshot;
+  lastSnapshot = null;
+  document.getElementById("undoBtn").hidden = true;
+  update(); save();
+  toast("Производство отменено");
+}
+
+document.getElementById("produceBtn").addEventListener("click", runProduction);
+document.getElementById("undoBtn").addEventListener("click", undoProduction);
+
+// ---- menu sheet ----
+const sheet = document.getElementById("sheet");
+document.getElementById("menuBtn").addEventListener("click", () => sheet.classList.add("show"));
+document.getElementById("closeSheet").addEventListener("click", () => sheet.classList.remove("show"));
+sheet.addEventListener("click", e => { if(e.target === sheet) sheet.classList.remove("show"); });
+document.getElementById("newGameBtn").addEventListener("click", () => {
+  if(confirm("Сбросить и начать новую игру?")){
+    state = defaultState(); lastSnapshot = null;
+    document.getElementById("undoBtn").hidden = true;
+    update(); save(); sheet.classList.remove("show");
+  }
+});
+document.getElementById("prodSummaryBtn").addEventListener("click", () => {
+  const r = state.res, icons = {steel:"🔩",titanium:"🛰️",plants:"🌱",energy:"⚡",heat:"🔥"};
+  const lines = [`💰 +${mcGain()} M€  (TR ${state.tr} + произв. ${r.mc.prod})`];
+  if(r.energy.stock > 0) lines.push(`🔥 +${r.energy.stock} (вся энергия → тепло)`);
+  ["steel","titanium","plants","energy","heat"].forEach(k=>{
+    if(r[k].prod>0) lines.push(`${icons[k]} +${r[k].prod}`);
+  });
+  alert("Следующее производство начислит:\n\n" + lines.join("\n"));
+});
+
+// ---- toast ----
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+// ---- render ----
+function update(){
+  trVal.value = state.tr;
+  pname.value = state.name || "";
+  document.getElementById("gen").textContent = state.gen;
+  RES.forEach(r => {
+    const rs = state.res[r.key];
+    refs[r.key].prod.value = rs.prod;
+    refs[r.key].stock.value = rs.stock;
+    if(r.convert) refs[r.key].convert.disabled = rs.stock < r.convert.cost;
+  });
+  document.getElementById("prevText").textContent = "+" + mcGain() + " M€";
+}
+update();
+</script>
+</body>
+</html>
